@@ -94,14 +94,24 @@ export default function PreviewPanel({
 
       {selectedRecord && (
         <div className="p-4 border-t border-gray-200 bg-white">
-          <div className="text-sm text-gray-600 space-y-1">
+          <div className="text-sm text-gray-600 grid grid-cols-2 gap-x-4 gap-y-1">
             <p>
               <span className="font-medium">Ratio:</span> {selectedRecord.aspectRatio}
             </p>
             <p>
               <span className="font-medium">Resolution:</span> {selectedRecord.resolution}
             </p>
-            <p>
+            {selectedRecord.style && (
+              <p>
+                <span className="font-medium">Color Scheme:</span> {selectedRecord.style}
+              </p>
+            )}
+            {selectedRecord.graphicStyle && (
+              <p>
+                <span className="font-medium">Graphic Style:</span> {selectedRecord.graphicStyle}
+              </p>
+            )}
+            <p className="col-span-2">
               <span className="font-medium">Created:</span>{' '}
               {new Date(selectedRecord.createdAt).toLocaleString()}
             </p>

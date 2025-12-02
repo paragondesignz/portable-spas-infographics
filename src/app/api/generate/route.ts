@@ -67,13 +67,15 @@ export async function POST(request: NextRequest) {
       !!brandLogo // Pass flag indicating logo is included
     );
 
-    // Save to Vercel Blob
+    // Save to Vercel Blob with all settings
     const record = await saveInfographic(
       imageData,
       mimeType,
       prompt,
       aspectRatio,
-      resolution
+      resolution,
+      style,
+      graphicStyle
     );
 
     return NextResponse.json({

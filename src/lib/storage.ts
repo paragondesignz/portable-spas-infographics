@@ -10,7 +10,9 @@ export async function saveInfographic(
   mimeType: string,
   prompt: string,
   aspectRatio: string,
-  resolution: string
+  resolution: string,
+  style?: string,
+  graphicStyle?: string
 ): Promise<InfographicRecord> {
   const id = uuidv4();
   const timestamp = new Date().toISOString();
@@ -33,6 +35,8 @@ export async function saveInfographic(
     prompt,
     aspectRatio,
     resolution,
+    style,
+    graphicStyle,
     createdAt: timestamp,
   };
 

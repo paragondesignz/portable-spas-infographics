@@ -5,6 +5,8 @@ export interface InfographicRecord {
   prompt: string;
   aspectRatio: string;
   resolution: string;
+  style?: string;
+  graphicStyle?: string;
   createdAt: string;
 }
 
