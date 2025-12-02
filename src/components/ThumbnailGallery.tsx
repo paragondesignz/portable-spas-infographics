@@ -9,6 +9,37 @@ interface ThumbnailGalleryProps {
   refreshTrigger?: number;
 }
 
+function ThumbnailImage({ src, alt }: { src: string; alt: string }) {
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+
+  return (
+    <div className="w-full h-full relative bg-gray-200">
+      {status === 'loading' && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      {status === 'error' && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        onLoad={() => setStatus('loaded')}
+        onError={() => setStatus('error')}
+        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-200 ${
+          status === 'loaded' ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+    </div>
+  );
+}
+
 export default function ThumbnailGallery({
   onSelect,
   selectedId,
@@ -73,31 +104,31 @@ export default function ThumbnailGallery({
             <div
               key={record.id}
               onClick={() => onSelect(record)}
-              className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition ${
+              className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
                 selectedId === record.id
                   ? 'border-blue-500 ring-2 ring-blue-200'
-                  : 'border-transparent hover:border-gray-300'
+                  : 'border-gray-200 hover:border-gray-400'
               }`}
             >
-              <div
-                className="w-full aspect-square bg-gray-100"
-                style={{
-                  backgroundImage: `url(${record.thumbnailUrl || record.url})`,
-                  backgroundSize: 'contain',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
-                }}
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition">
-                <button
-                  onClick={(e) => handleDelete(e, record.id)}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition"
-                >
-                  ×
-                </button>
+              <div className="aspect-square">
+                <ThumbnailImage
+                  src={record.url}
+                  alt={record.prompt?.substring(0, 50) || 'Infographic'}
+                />
               </div>
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-1 opacity-0 group-hover:opacity-100 transition">
-                <p className="text-white text-xs truncate">{record.aspectRatio}</p>
+
+              {/* Delete button - only visible on hover */}
+              <button
+                onClick={(e) => handleDelete(e, record.id)}
+                className="absolute top-1 right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                title="Delete"
+              >
+                ×
+              </button>
+
+              {/* Aspect ratio label - only visible on hover */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900/70 to-transparent p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <p className="text-white text-xs truncate text-center">{record.aspectRatio}</p>
               </div>
             </div>
           ))}
