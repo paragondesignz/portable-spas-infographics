@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { InfographicRecord } from '@/types';
 import Lightbox from './Lightbox';
+import DownloadModal from './DownloadModal';
 
 interface PreviewPanelProps {
   imageUrl: string | null;
@@ -16,25 +17,7 @@ export default function PreviewPanel({
   selectedRecord,
 }: PreviewPanelProps) {
   const [showLightbox, setShowLightbox] = useState(false);
-
-  const handleDownload = async () => {
-    if (!imageUrl) return;
-
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `infographic-${selectedRecord?.id || 'new'}.png`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Download failed:', error);
-    }
-  };
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   return (
     <div className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
@@ -42,7 +25,7 @@ export default function PreviewPanel({
         <h2 className="font-semibold text-gray-800">Preview</h2>
         {imageUrl && (
           <button
-            onClick={handleDownload}
+            onClick={() => setShowDownloadModal(true)}
             className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition"
           >
             <svg
@@ -131,7 +114,20 @@ export default function PreviewPanel({
         <Lightbox
           imageUrl={imageUrl}
           onClose={() => setShowLightbox(false)}
-          filename={`infographic-${selectedRecord?.id || 'new'}.png`}
+          onDownload={() => {
+            setShowLightbox(false);
+            setShowDownloadModal(true);
+          }}
+          filename={`infographic-${selectedRecord?.id || 'new'}`}
+        />
+      )}
+
+      {/* Download Modal */}
+      {showDownloadModal && imageUrl && (
+        <DownloadModal
+          imageUrl={imageUrl}
+          onClose={() => setShowDownloadModal(false)}
+          defaultFilename={`infographic-${selectedRecord?.id || 'new'}`}
         />
       )}
     </div>

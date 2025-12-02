@@ -5,10 +5,11 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 interface LightboxProps {
   imageUrl: string;
   onClose: () => void;
+  onDownload?: () => void;
   filename?: string;
 }
 
-export default function Lightbox({ imageUrl, onClose, filename = 'infographic.png' }: LightboxProps) {
+export default function Lightbox({ imageUrl, onClose, onDownload, filename = 'infographic' }: LightboxProps) {
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -22,20 +23,9 @@ export default function Lightbox({ imageUrl, onClose, filename = 'infographic.pn
     setPosition({ x: 0, y: 0 });
   };
 
-  const handleDownload = async () => {
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Download failed:', error);
+  const handleDownload = () => {
+    if (onDownload) {
+      onDownload();
     }
   };
 
