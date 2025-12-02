@@ -138,7 +138,8 @@ export async function generateInfographic(
   referenceImages: string[] = [],
   aspectRatio: AspectRatio,
   resolution: Resolution,
-  style?: InfographicStyle
+  style?: InfographicStyle,
+  includeLogo?: boolean
 ): Promise<{ imageData: string; mimeType: string; textResponse?: string }> {
   const ai = getGeminiClient();
 
@@ -148,12 +149,31 @@ export async function generateInfographic(
   // Get style-specific instructions
   const styleInstructions = style ? getStyleInstructions(style) : '';
 
+  // Add logo-specific instructions if logo is included
+  const logoInstructions = includeLogo
+    ? `
+BRAND LOGO INSTRUCTIONS (CRITICAL - THE FIRST IMAGE PROVIDED IS THE OFFICIAL LOGO):
+The first reference image I'm providing is the official Portable Spas New Zealand logo. You MUST include this exact logo in the infographic following these rules:
+
+1. PLACEMENT: Position the logo prominently but not intrusively - typically in a corner (bottom-right or top-left preferred) or footer area
+2. CLEAR SPACE: Maintain clear space around the logo equal to at least the height of the 'O' in "PORTABLE" - never crowd it with other elements
+3. SIZE: Make the logo large enough to be clearly readable but proportional to the infographic (typically 10-15% of the width)
+4. BACKGROUND: Place the logo on a clean, uncluttered area - if needed, add a subtle background shape to ensure contrast
+5. COLOR ADAPTATION:
+   - On DARK backgrounds (Silvertide #4B5E5A, dark images): Render logo in LIGHT colors (Linen #E3DEC8 or white)
+   - On LIGHT backgrounds (Linen #E3DEC8, Tidemist #C4D0CD, white): Render logo in DARK colors (Silvertide #4B5E5A)
+6. INTEGRITY: Never distort, rotate, flip, or modify the logo proportions
+7. REPRODUCE ACCURATELY: Match the logo design exactly as provided - "PORTABLE SPAS" in bold uppercase, "New Zealand" in elegant script below
+
+`
+    : '';
+
   // Add the prompt
   const enhancedPrompt = `Create a professional, visually appealing infographic for Portable Spas New Zealand based on the following information.
 The design should be clean, modern, and suitable for marketing materials.
 Use a cohesive color scheme, clear typography, and visual hierarchy to present the information effectively.
 Include relevant icons or illustrations where appropriate.
-
+${logoInstructions}
 ${styleInstructions ? `DESIGN STYLE REQUIREMENTS:\n${styleInstructions}\n\n` : ''}Content to visualize:
 ${prompt}`;
 

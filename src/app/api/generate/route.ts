@@ -1,10 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { generateInfographic } from '@/lib/gemini';
 import { saveInfographic } from '@/lib/storage';
 import { isAuthenticated } from '@/lib/auth';
 import type { GenerationRequest, GenerationResponse, AspectRatio, Resolution, InfographicStyle } from '@/types';
 
 export const maxDuration = 60; // Allow up to 60 seconds for generation
+
+// Load brand logo for infographic generation
+function getBrandLogo(): string | null {
+  try {
+    const logoPath = join(process.cwd(), 'public', 'logo.png');
+    const logoBuffer = readFileSync(logoPath);
+    const base64 = logoBuffer.toString('base64');
+    return `data:image/png;base64,${base64}`;
+  } catch (error) {
+    console.error('Failed to load brand logo:', error);
+    return null;
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,13 +47,23 @@ export async function POST(request: NextRequest) {
       ? `${prompt}\n\nAdditional Context from Portable Spas NZ Knowledge Base:\n${enrichedContext}`
       : prompt;
 
+    // Get brand logo for brand style
+    const brandLogo = style === 'portable-spas-brand' ? getBrandLogo() : null;
+
+    // Combine reference images with brand logo if applicable
+    const allReferenceImages = [...(referenceImages || [])];
+    if (brandLogo) {
+      allReferenceImages.unshift(brandLogo); // Add logo as first reference image
+    }
+
     // Generate the infographic
     const { imageData, mimeType, textResponse } = await generateInfographic(
       fullPrompt,
-      referenceImages || [],
+      allReferenceImages,
       aspectRatio as AspectRatio,
       resolution as Resolution,
-      style as InfographicStyle
+      style as InfographicStyle,
+      !!brandLogo // Pass flag indicating logo is included
     );
 
     // Save to Vercel Blob
