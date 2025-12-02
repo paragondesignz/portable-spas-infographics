@@ -22,7 +22,7 @@ export interface GenerationRequest {
   resolution: Resolution;
   enrichedContext?: string;
   style?: InfographicStyle;
-  layoutStyle?: LayoutStyle;
+  graphicStyle?: GraphicStyle;
 }
 
 export interface GenerationResponse {
@@ -61,50 +61,71 @@ export type AspectRatio =
 
 export type Resolution = '1K' | '2K' | '4K';
 
-export type LayoutStyle =
-  | 'timeline'
-  | 'statistical'
-  | 'comparison'
-  | 'process-flow'
-  | 'isometric-3d';
+export type GraphicStyle =
+  | 'flat-design'
+  | 'isometric'
+  | 'hand-drawn'
+  | 'geometric'
+  | 'minimalist'
+  | 'retro-vintage'
+  | 'gradient-glass'
+  | 'line-art';
 
-export interface LayoutStyleOption {
-  value: LayoutStyle;
+export interface GraphicStyleOption {
+  value: GraphicStyle;
   label: string;
   description: string;
   icon: string;
 }
 
-export const LAYOUT_STYLES: LayoutStyleOption[] = [
+export const GRAPHIC_STYLES: GraphicStyleOption[] = [
   {
-    value: 'timeline',
-    label: 'Timeline',
-    description: 'Chronological layout showing events, history, or steps along a visual axis',
-    icon: '📅',
+    value: 'flat-design',
+    label: 'Flat Design',
+    description: 'Clean 2D style with bold colors, simple shapes, no shadows or gradients',
+    icon: '🎨',
   },
   {
-    value: 'statistical',
-    label: 'Statistical',
-    description: 'Data-driven design with charts, graphs, and visual data representations',
-    icon: '📊',
+    value: 'isometric',
+    label: 'Isometric',
+    description: '3D-like perspective with consistent angles, depth without vanishing points',
+    icon: '📐',
   },
   {
-    value: 'comparison',
-    label: 'Comparison',
-    description: 'Side-by-side or versus layouts for comparing options, features, or products',
-    icon: '⚖️',
+    value: 'hand-drawn',
+    label: 'Hand-Drawn',
+    description: 'Sketch-like illustrations with organic lines and artistic imperfection',
+    icon: '✏️',
   },
   {
-    value: 'process-flow',
-    label: 'Process Flow',
-    description: 'Step-by-step visual journey showing how something works or is done',
-    icon: '🔄',
+    value: 'geometric',
+    label: 'Geometric',
+    description: 'Bold abstract shapes, patterns, and mathematical precision',
+    icon: '🔷',
   },
   {
-    value: 'isometric-3d',
-    label: 'Isometric 3D',
-    description: 'Modern 3D-style illustrations with depth and visual interest',
-    icon: '🎲',
+    value: 'minimalist',
+    label: 'Minimalist',
+    description: 'Ultra-clean with maximum whitespace, only essential elements',
+    icon: '⬜',
+  },
+  {
+    value: 'retro-vintage',
+    label: 'Retro Vintage',
+    description: 'Classic design elements with nostalgic, aged aesthetic',
+    icon: '📻',
+  },
+  {
+    value: 'gradient-glass',
+    label: 'Gradient & Glass',
+    description: 'Modern gradients, glassmorphism effects, smooth depth and blur',
+    icon: '🌈',
+  },
+  {
+    value: 'line-art',
+    label: 'Line Art',
+    description: 'Elegant outlined illustrations, minimal fills, sophisticated simplicity',
+    icon: '✒️',
   },
 ];
 
