@@ -4,7 +4,7 @@ import { join } from 'path';
 import { generateInfographic } from '@/lib/gemini';
 import { saveInfographic } from '@/lib/storage';
 import { isAuthenticated } from '@/lib/auth';
-import type { GenerationRequest, GenerationResponse, AspectRatio, Resolution, InfographicStyle } from '@/types';
+import type { GenerationRequest, GenerationResponse, AspectRatio, Resolution, InfographicStyle, LayoutStyle } from '@/types';
 
 export const maxDuration = 60; // Allow up to 60 seconds for generation
 
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: GenerationRequest = await request.json();
-    const { prompt, referenceImages, aspectRatio, resolution, style, enrichedContext } = body;
+    const { prompt, referenceImages, aspectRatio, resolution, style, layoutStyle, enrichedContext } = body;
 
     if (!prompt) {
       return NextResponse.json(
@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
       aspectRatio as AspectRatio,
       resolution as Resolution,
       style as InfographicStyle,
+      layoutStyle as LayoutStyle,
       !!brandLogo // Pass flag indicating logo is included
     );
 

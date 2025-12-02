@@ -22,6 +22,7 @@ export interface GenerationRequest {
   resolution: Resolution;
   enrichedContext?: string;
   style?: InfographicStyle;
+  layoutStyle?: LayoutStyle;
 }
 
 export interface GenerationResponse {
@@ -59,6 +60,53 @@ export type AspectRatio =
   | '21:9';
 
 export type Resolution = '1K' | '2K' | '4K';
+
+export type LayoutStyle =
+  | 'timeline'
+  | 'statistical'
+  | 'comparison'
+  | 'process-flow'
+  | 'isometric-3d';
+
+export interface LayoutStyleOption {
+  value: LayoutStyle;
+  label: string;
+  description: string;
+  icon: string;
+}
+
+export const LAYOUT_STYLES: LayoutStyleOption[] = [
+  {
+    value: 'timeline',
+    label: 'Timeline',
+    description: 'Chronological layout showing events, history, or steps along a visual axis',
+    icon: '📅',
+  },
+  {
+    value: 'statistical',
+    label: 'Statistical',
+    description: 'Data-driven design with charts, graphs, and visual data representations',
+    icon: '📊',
+  },
+  {
+    value: 'comparison',
+    label: 'Comparison',
+    description: 'Side-by-side or versus layouts for comparing options, features, or products',
+    icon: '⚖️',
+  },
+  {
+    value: 'process-flow',
+    label: 'Process Flow',
+    description: 'Step-by-step visual journey showing how something works or is done',
+    icon: '🔄',
+  },
+  {
+    value: 'isometric-3d',
+    label: 'Isometric 3D',
+    description: 'Modern 3D-style illustrations with depth and visual interest',
+    icon: '🎲',
+  },
+];
 
 export type InfographicStyle =
   | 'portable-spas-brand'

@@ -4,7 +4,8 @@ import { useState } from 'react';
 import SettingsPanel from './SettingsPanel';
 import ReferenceImageLibrary from './ReferenceImageLibrary';
 import StyleSelector from './StyleSelector';
-import type { AspectRatio, Resolution, InfographicStyle, GenerationResponse, PineconeContextResponse } from '@/types';
+import LayoutStyleSelector from './LayoutStyleSelector';
+import type { AspectRatio, Resolution, InfographicStyle, LayoutStyle, GenerationResponse, PineconeContextResponse } from '@/types';
 
 interface GeneratorFormProps {
   onGenerate: (imageUrl: string, id: string) => void;
@@ -16,6 +17,7 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('16:9');
   const [resolution, setResolution] = useState<Resolution>('2K');
   const [style, setStyle] = useState<InfographicStyle>('portable-spas-brand');
+  const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>('process-flow');
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [useRAG, setUseRAG] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -86,6 +88,7 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
           aspectRatio,
           resolution,
           style,
+          layoutStyle,
           enrichedContext: context,
         }),
       });
@@ -128,6 +131,8 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
       </div>
 
       <StyleSelector selectedStyle={style} onStyleChange={setStyle} />
+
+      <LayoutStyleSelector selectedLayout={layoutStyle} onLayoutChange={setLayoutStyle} />
 
       <ReferenceImageLibrary
         selectedImages={selectedImages}

@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
-import type { AspectRatio, Resolution, InfographicStyle } from '@/types';
-import { INFOGRAPHIC_STYLES } from '@/types';
+import type { AspectRatio, Resolution, InfographicStyle, LayoutStyle } from '@/types';
+import { INFOGRAPHIC_STYLES, LAYOUT_STYLES } from '@/types';
 
 let genaiClient: GoogleGenAI | null = null;
 
@@ -133,12 +133,123 @@ NEVER do these with the logo:
   return styleGuides[styleValue] || '';
 }
 
+function getLayoutInstructions(layoutValue: LayoutStyle): string {
+  const layout = LAYOUT_STYLES.find((l) => l.value === layoutValue);
+  if (!layout) return '';
+
+  const layoutGuides: Record<LayoutStyle, string> = {
+    'timeline': `LAYOUT STRUCTURE: Timeline Infographic
+Create a chronological visual narrative with the following structure:
+
+LAYOUT REQUIREMENTS:
+- Arrange content along a clear visual timeline axis (vertical or horizontal based on aspect ratio)
+- Use a prominent central line, path, or connector as the visual backbone
+- Place events, milestones, or steps at regular intervals along the timeline
+- Each point should have a date/number marker, icon, and brief description
+- Use alternating sides of the timeline for visual balance (left-right or top-bottom)
+- Include clear start and end points with visual emphasis
+- Connect timeline points with lines, arrows, or flowing paths
+
+VISUAL ELEMENTS:
+- Timeline markers (circles, dots, icons) at each point
+- Connecting lines or paths between events
+- Date/step labels prominently displayed
+- Brief descriptive text boxes for each point
+- Optional: milestone highlights for key events
+- Direction indicators (arrows) showing flow of time/process`,
+
+    'statistical': `LAYOUT STRUCTURE: Statistical/Data Infographic
+Create a data-driven visual with charts, graphs, and numerical emphasis:
+
+LAYOUT REQUIREMENTS:
+- Feature prominent data visualizations (charts, graphs, meters)
+- Include large, bold statistics and key numbers
+- Use pie charts, bar graphs, line graphs, or icon arrays as appropriate
+- Create clear data comparisons with visual representations
+- Include percentage indicators, progress bars, or gauges
+- Organize data into logical groupings or categories
+
+VISUAL ELEMENTS:
+- Large headline statistics with supporting context
+- Chart types: pie/donut charts, bar charts, line graphs, area charts
+- Icon arrays (pictographs) for countable items
+- Progress bars or radial progress indicators
+- Comparison visualizations (before/after, vs)
+- Data callouts with key insights highlighted
+- Legend and axis labels where appropriate`,
+
+    'comparison': `LAYOUT STRUCTURE: Comparison Infographic
+Create a side-by-side or versus-style layout for comparing options:
+
+LAYOUT REQUIREMENTS:
+- Divide the layout into clear comparison sections (2-3 columns or rows)
+- Use consistent visual structure for each compared item
+- Include a central divider or "VS" element if comparing two items
+- Align comparable features/attributes horizontally for easy scanning
+- Use checkmarks, X marks, or ratings to show differences
+- Include summary or winner section if appropriate
+
+VISUAL ELEMENTS:
+- Clear section headers for each compared item
+- Feature/attribute rows with visual indicators
+- Icons or illustrations representing each option
+- Check/cross marks or star ratings for feature comparison
+- Highlight boxes for key differentiators
+- Price/value callouts if relevant
+- Visual balance between compared sections`,
+
+    'process-flow': `LAYOUT STRUCTURE: Process Flow Infographic
+Create a step-by-step visual guide showing how something works:
+
+LAYOUT REQUIREMENTS:
+- Organize content into numbered or sequential steps
+- Use clear visual flow from start to finish
+- Connect steps with arrows, lines, or flowing paths
+- Each step should have an icon, number, title, and brief description
+- Include visual progression indicators
+- Can be linear, circular, or branching based on content
+
+VISUAL ELEMENTS:
+- Numbered step indicators (1, 2, 3... or Step 1, Step 2...)
+- Directional arrows or connectors between steps
+- Icons representing each step's action or concept
+- Brief, clear text descriptions for each step
+- Start/end markers or emphasis
+- Optional: time estimates or duration for each step
+- Color progression to show advancement`,
+
+    'isometric-3d': `LAYOUT STRUCTURE: Isometric 3D Infographic
+Create a modern 3D-style infographic with depth and visual interest:
+
+LAYOUT REQUIREMENTS:
+- Use isometric perspective (30-degree angles, no vanishing points)
+- Create depth with layered elements and 3D objects
+- Arrange information around or within 3D structures
+- Use shadows and highlights to enhance 3D effect
+- Incorporate 3D icons, buildings, or abstract shapes
+- Create visual hierarchy through size and placement in 3D space
+
+VISUAL ELEMENTS:
+- Isometric icons and illustrations (cubes, buildings, devices)
+- Layered platforms or floating elements
+- 3D charts (isometric bar charts, 3D pie charts)
+- Shadows and lighting effects for depth
+- Connected elements in 3D space
+- Modern, tech-forward aesthetic
+- Clean lines with consistent isometric angles
+- Bright accent colors against clean backgrounds`,
+  };
+
+  return layoutGuides[layoutValue] || '';
+}
+
 export async function generateInfographic(
   prompt: string,
   referenceImages: string[] = [],
   aspectRatio: AspectRatio,
   resolution: Resolution,
   style?: InfographicStyle,
+  layoutStyle?: LayoutStyle,
   includeLogo?: boolean
 ): Promise<{ imageData: string; mimeType: string; textResponse?: string }> {
   const ai = getGeminiClient();
@@ -146,8 +257,11 @@ export async function generateInfographic(
   // Build content parts
   const contentParts: Array<string | { inlineData: { mimeType: string; data: string } }> = [];
 
-  // Get style-specific instructions
+  // Get style-specific instructions (color scheme)
   const styleInstructions = style ? getStyleInstructions(style) : '';
+
+  // Get layout-specific instructions (graphic structure)
+  const layoutInstructions = layoutStyle ? getLayoutInstructions(layoutStyle) : '';
 
   // Add logo-specific instructions if logo is included
   const logoInstructions = includeLogo
@@ -174,7 +288,7 @@ The design should be clean, modern, and suitable for marketing materials.
 Use a cohesive color scheme, clear typography, and visual hierarchy to present the information effectively.
 Include relevant icons or illustrations where appropriate.
 ${logoInstructions}
-${styleInstructions ? `DESIGN STYLE REQUIREMENTS:\n${styleInstructions}\n\n` : ''}Content to visualize:
+${layoutInstructions ? `${layoutInstructions}\n\n` : ''}${styleInstructions ? `COLOR SCHEME & VISUAL STYLE:\n${styleInstructions}\n\n` : ''}Content to visualize:
 ${prompt}`;
 
   contentParts.push(enhancedPrompt);
