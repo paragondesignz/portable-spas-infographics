@@ -23,63 +23,30 @@ function getStyleInstructions(styleValue: InfographicStyle): string {
     'portable-spas-brand': `Style: Portable Spas New Zealand Official Brand
 CRITICAL: Follow these exact brand guidelines for all design elements.
 
-COLOR PALETTE (use these exact colors):
-- Silvertide #4B5E5A (primary dark teal-grey) - use for headlines, key elements
-- Tidemist #C4D0CD (soft blue-grey) - use for backgrounds, secondary elements
-- Linen #E3DEC8 (warm cream/beige) - use for backgrounds, contrast areas
-- Soilstone #907E59 (warm brown/tan) - use sparingly for accents
-- White #FFFFFF and Black #000000 for text contrast
+COLOR PALETTE (use these exact hex colors - DO NOT write color names as text):
+- #4B5E5A (primary dark teal-grey) - use for headlines, key elements
+- #C4D0CD (soft blue-grey) - use for backgrounds, secondary elements
+- #E3DEC8 (warm cream/beige) - use for backgrounds, contrast areas
+- #907E59 (warm brown/tan) - use sparingly for accents
+- #FFFFFF and #000000 for text contrast
 
-TYPOGRAPHY STYLE (CRITICAL - follow closely):
-- Headlines (H1/H2): Use a bold, clean, geometric sans-serif font similar to Montserrat Bold or Inter Bold.
-  Characteristics: rounded letterforms, modern, confident, slightly condensed tracking. NO thin or light weights.
-- Accent text (H3/labels): Use an elegant flowing handwritten script font similar to Allura or Great Vibes.
-  Characteristics: connected cursive letters, graceful loops, slightly slanted, personal feel.
-- Body text: Use a clean geometric sans-serif like Poppins or Open Sans.
-  Characteristics: highly readable, friendly rounded letters, medium weight for body.
-- Typography hierarchy: H1 very large and bold, H2 medium-large, script accents for warmth, body text smaller and lighter.
-- Letter spacing: Headlines slightly tighter, body text normal spacing.
+TYPOGRAPHY STYLE:
+- Headlines: Bold, clean, geometric sans-serif (like Montserrat Bold). Modern, confident.
+- Accent text: Elegant flowing handwritten script (like Allura). Graceful loops, personal feel.
+- Body text: Clean geometric sans-serif (like Poppins). Highly readable, friendly.
 
 DESIGN ELEMENTS:
-- Include flowing wave motifs or patterns as decorative elements
-- Use rounded corners on containers and cards
-- Hand-drawn style icons where appropriate (simple line art)
-- Clean, modern layouts with clear visual hierarchy
-- Generous whitespace - don't overcrowd
+- Flowing wave motifs or patterns as decorative elements
+- Rounded corners on containers and cards
+- Hand-drawn style icons (simple line art)
+- Clean layouts with clear visual hierarchy
+- Generous whitespace
 
 BRAND PERSONALITY:
-- Approachable and down-to-earth, not elitist
-- Warm and inviting - luxury made accessible
-- Kiwi-focused, family-friendly feel
-- Educational but never dry or boring
-- Touch of playful wit where appropriate
-
-IMAGERY STYLE:
-- Warm, inviting, grounded in reality
-- Aspirational but achievable ("I could have that")
-- Focus on relaxation, family, wellbeing
-- Natural settings, New Zealand lifestyle
-
-LOGO USAGE (CRITICAL - must follow these rules):
-The logo consists of:
-1. "PORTABLE SPAS" in bold, clean, uppercase sans-serif (like the headline font)
-2. "New Zealand" in elegant flowing script below, slightly smaller
-
-Logo placement rules:
-- Include the logo on every infographic, typically in a corner or footer area
-- Ensure adequate clear space around the logo (at least the height of the 'O' in PORTABLE)
-- Never crowd the logo with other elements
-
-Logo color rules (MUST FOLLOW):
-- On DARK backgrounds (Silvertide #4B5E5A, dark images): Use LIGHT logo (Linen #E3DEC8 or white)
-- On LIGHT backgrounds (Linen #E3DEC8, Tidemist #C4D0CD, white): Use DARK logo (Silvertide #4B5E5A)
-- On Soilstone #907E59 backgrounds: Use Linen #E3DEC8 logo
-
-NEVER do these with the logo:
-- Never use low contrast (dark logo on dark, light on light)
-- Never flip, rotate, or distort the logo
-- Never use colors outside the brand palette
-- Never place logo on busy/cluttered areas without a clear background`,
+- Approachable and down-to-earth
+- Warm and inviting
+- Family-friendly, New Zealand lifestyle
+- Educational but engaging`,
 
     'modern-minimal': `Style: Modern Minimal
 - Use generous whitespace and clean layouts
@@ -266,29 +233,31 @@ export async function generateInfographic(
   // Add logo-specific instructions if logo is included
   const logoInstructions = includeLogo
     ? `
-BRAND LOGO INSTRUCTIONS (CRITICAL - THE FIRST IMAGE PROVIDED IS THE OFFICIAL LOGO):
-The first reference image I'm providing is the official Portable Spas New Zealand logo. You MUST include this exact logo in the infographic following these rules:
-
-1. PLACEMENT: Position the logo prominently but not intrusively - typically in a corner (bottom-right or top-left preferred) or footer area
-2. CLEAR SPACE: Maintain clear space around the logo equal to at least the height of the 'O' in "PORTABLE" - never crowd it with other elements
-3. SIZE: Make the logo large enough to be clearly readable but proportional to the infographic (typically 10-15% of the width)
-4. BACKGROUND: Place the logo on a clean, uncluttered area - if needed, add a subtle background shape to ensure contrast
-5. COLOR ADAPTATION:
-   - On DARK backgrounds (Silvertide #4B5E5A, dark images): Render logo in LIGHT colors (Linen #E3DEC8 or white)
-   - On LIGHT backgrounds (Linen #E3DEC8, Tidemist #C4D0CD, white): Render logo in DARK colors (Silvertide #4B5E5A)
-6. INTEGRITY: Never distort, rotate, flip, or modify the logo proportions
-7. REPRODUCE ACCURATELY: Match the logo design exactly as provided - "PORTABLE SPAS" in bold uppercase, "New Zealand" in elegant script below
+BRAND LOGO INSTRUCTIONS (THE FIRST IMAGE PROVIDED IS THE OFFICIAL LOGO):
+Include the provided logo in the infographic following these rules:
+- Position in a corner (bottom-right or top-left preferred) or footer area
+- Maintain clear space around the logo
+- On dark backgrounds (#4B5E5A): Use light logo (#E3DEC8 or white)
+- On light backgrounds (#E3DEC8, #C4D0CD, white): Use dark logo (#4B5E5A)
+- Never distort or modify the logo proportions
 
 `
     : '';
 
   // Add the prompt
   const enhancedPrompt = `Create a professional, visually appealing infographic for Portable Spas New Zealand based on the following information.
+
+CRITICAL RULES - READ FIRST:
+- NEVER include color names, hex codes, style names, or any design instruction text as visible text in the infographic
+- NEVER write words like "Silvertide", "Tidemist", "Linen", "Soilstone", or any color/style terminology as text
+- The design instructions below are for YOUR reference only - they should influence the visual design, NOT appear as text content
+- Only include text that is part of the actual content to visualize (provided at the end)
+
 The design should be clean, modern, and suitable for marketing materials.
 Use a cohesive color scheme, clear typography, and visual hierarchy to present the information effectively.
 Include relevant icons or illustrations where appropriate.
 ${logoInstructions}
-${layoutInstructions ? `${layoutInstructions}\n\n` : ''}${styleInstructions ? `COLOR SCHEME & VISUAL STYLE:\n${styleInstructions}\n\n` : ''}Content to visualize:
+${layoutInstructions ? `${layoutInstructions}\n\n` : ''}${styleInstructions ? `COLOR SCHEME & VISUAL STYLE (apply visually, do NOT write as text):\n${styleInstructions}\n\n` : ''}CONTENT TO VISUALIZE (this is the only text that should appear in the infographic):
 ${prompt}`;
 
   contentParts.push(enhancedPrompt);
