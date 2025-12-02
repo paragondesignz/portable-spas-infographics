@@ -3,19 +3,39 @@
 :root {
   --background: #f8fafc;
   --foreground: #171717;
+
+  /* Portable Spas Brand Colors */
+  --color-silvertide: #4B5E5A;
+  --color-tidemist: #C4D0CD;
+  --color-linen: #E3DEC8;
+  --color-soilstone: #907E59;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-poppins);
+  --font-heading: var(--font-cal-sans);
+  --font-accent: var(--font-mayonice);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+}
+
+/* Brand Font Utilities */
+.font-heading {
+  font-family: var(--font-cal-sans), system-ui, sans-serif;
+}
+
+.font-accent {
+  font-family: var(--font-mayonice), cursive;
+}
+
+.font-body {
+  font-family: var(--font-poppins), system-ui, sans-serif;
 }
 
 /* Custom scrollbar for galleries */

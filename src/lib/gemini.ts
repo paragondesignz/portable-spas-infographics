@@ -30,11 +30,15 @@ COLOR PALETTE (use these exact colors):
 - Soilstone #907E59 (warm brown/tan) - use sparingly for accents
 - White #FFFFFF and Black #000000 for text contrast
 
-TYPOGRAPHY STYLE:
-- Headlines: Bold, clean sans-serif (like Cal Sans) - modern and aspirational
-- Subheadings: Can use elegant script/handwritten style for accent text
-- Body text: Clean, readable sans-serif (like Poppins)
-- Keep typography hierarchy clear: H1 large and bold, H2 medium, body smaller
+TYPOGRAPHY STYLE (CRITICAL - follow closely):
+- Headlines (H1/H2): Use a bold, clean, geometric sans-serif font similar to Montserrat Bold or Inter Bold.
+  Characteristics: rounded letterforms, modern, confident, slightly condensed tracking. NO thin or light weights.
+- Accent text (H3/labels): Use an elegant flowing handwritten script font similar to Allura or Great Vibes.
+  Characteristics: connected cursive letters, graceful loops, slightly slanted, personal feel.
+- Body text: Use a clean geometric sans-serif like Poppins or Open Sans.
+  Characteristics: highly readable, friendly rounded letters, medium weight for body.
+- Typography hierarchy: H1 very large and bold, H2 medium-large, script accents for warmth, body text smaller and lighter.
+- Letter spacing: Headlines slightly tighter, body text normal spacing.
 
 DESIGN ELEMENTS:
 - Include flowing wave motifs or patterns as decorative elements

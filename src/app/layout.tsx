@@ -1,15 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Google Font - Body text
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+// Local Fonts - Brand fonts
+const calSans = localFont({
+  src: "../../public/Cal_Sans/CalSans-Regular.ttf",
+  variable: "--font-cal-sans",
+  display: "swap",
+});
+
+const mayonice = localFont({
+  src: "../../public/mayonice/Mayonice.otf",
+  variable: "--font-mayonice",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} ${calSans.variable} ${mayonice.variable} antialiased`}
       >
         {children}
       </body>

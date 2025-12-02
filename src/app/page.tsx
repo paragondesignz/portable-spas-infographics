@@ -72,19 +72,19 @@ export default function Home() {
 
   // Main app
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#C4D0CD] to-[#E3DEC8]">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-[#4B5E5A] shadow-sm border-b border-[#3d4e4a]">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div>
-            <h1 className="text-xl font-bold text-gray-800">
-              Portable Spas NZ
+            <h1 className="font-heading text-xl font-bold text-[#E3DEC8]">
+              PORTABLE SPAS
             </h1>
-            <p className="text-sm text-gray-500">Infographic Generator</p>
+            <p className="font-accent text-sm text-[#C4D0CD]">New Zealand</p>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition"
+            className="px-4 py-2 text-sm text-[#E3DEC8] hover:text-white hover:bg-[#3d4e4a] rounded-lg transition"
           >
             Sign Out
           </button>
@@ -96,7 +96,7 @@ export default function Home() {
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Left Column - Form */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            <h2 className="font-heading text-lg font-semibold text-[#4B5E5A] mb-4">
               Create New Infographic
             </h2>
             <GeneratorForm
@@ -126,8 +126,8 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto py-4 text-center text-sm text-gray-500">
-        <p>Powered by Gemini 3 Pro Image + Pinecone RAG</p>
+      <footer className="mt-auto py-4 text-center text-sm text-[#4B5E5A]">
+        <p className="font-body">Powered by Gemini 3 Pro Image + Pinecone RAG</p>
       </footer>
     </div>
   );
