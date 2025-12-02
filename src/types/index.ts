@@ -61,6 +61,7 @@ export type AspectRatio =
 export type Resolution = '1K' | '2K' | '4K';
 
 export type InfographicStyle =
+  | 'portable-spas-brand'
   | 'modern-minimal'
   | 'bold-corporate'
   | 'organic-natural'
@@ -77,6 +78,13 @@ export interface StyleOption {
 }
 
 export const INFOGRAPHIC_STYLES: StyleOption[] = [
+  {
+    value: 'portable-spas-brand',
+    label: 'Portable Spas NZ',
+    description: 'Official brand style with Silvertide, Tidemist & Linen colors',
+    colors: ['#4B5E5A', '#C4D0CD', '#E3DEC8'],
+    preview: 'Approachable luxury, warm & inviting Kiwi feel',
+  },
   {
     value: 'modern-minimal',
     label: 'Modern Minimal',

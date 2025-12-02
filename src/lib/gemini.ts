@@ -20,6 +20,42 @@ function getStyleInstructions(styleValue: InfographicStyle): string {
   const colorHex = style.colors.join(', ');
 
   const styleGuides: Record<InfographicStyle, string> = {
+    'portable-spas-brand': `Style: Portable Spas New Zealand Official Brand
+CRITICAL: Follow these exact brand guidelines for all design elements.
+
+COLOR PALETTE (use these exact colors):
+- Silvertide #4B5E5A (primary dark teal-grey) - use for headlines, key elements
+- Tidemist #C4D0CD (soft blue-grey) - use for backgrounds, secondary elements
+- Linen #E3DEC8 (warm cream/beige) - use for backgrounds, contrast areas
+- Soilstone #907E59 (warm brown/tan) - use sparingly for accents
+- White #FFFFFF and Black #000000 for text contrast
+
+TYPOGRAPHY STYLE:
+- Headlines: Bold, clean sans-serif (like Cal Sans) - modern and aspirational
+- Subheadings: Can use elegant script/handwritten style for accent text
+- Body text: Clean, readable sans-serif (like Poppins)
+- Keep typography hierarchy clear: H1 large and bold, H2 medium, body smaller
+
+DESIGN ELEMENTS:
+- Include flowing wave motifs or patterns as decorative elements
+- Use rounded corners on containers and cards
+- Hand-drawn style icons where appropriate (simple line art)
+- Clean, modern layouts with clear visual hierarchy
+- Generous whitespace - don't overcrowd
+
+BRAND PERSONALITY:
+- Approachable and down-to-earth, not elitist
+- Warm and inviting - luxury made accessible
+- Kiwi-focused, family-friendly feel
+- Educational but never dry or boring
+- Touch of playful wit where appropriate
+
+IMAGERY STYLE:
+- Warm, inviting, grounded in reality
+- Aspirational but achievable ("I could have that")
+- Focus on relaxation, family, wellbeing
+- Natural settings, New Zealand lifestyle`,
+
     'modern-minimal': `Style: Modern Minimal
 - Use generous whitespace and clean layouts
 - Employ simple geometric shapes and thin lines

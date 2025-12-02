@@ -15,7 +15,7 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
   const [prompt, setPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('16:9');
   const [resolution, setResolution] = useState<Resolution>('2K');
-  const [style, setStyle] = useState<InfographicStyle>('modern-minimal');
+  const [style, setStyle] = useState<InfographicStyle>('portable-spas-brand');
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [useRAG, setUseRAG] = useState(true);
   const [loading, setLoading] = useState(false);
