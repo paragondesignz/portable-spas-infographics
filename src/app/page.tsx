@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import LoginForm from '@/components/LoginForm';
 import GeneratorForm from '@/components/GeneratorForm';
 import PreviewPanel from '@/components/PreviewPanel';
@@ -77,10 +78,14 @@ export default function Home() {
       <header className="bg-[#4B5E5A] shadow-sm border-b border-[#3d4e4a]">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div>
-            <h1 className="font-heading text-xl font-bold text-[#E3DEC8]">
-              PORTABLE SPAS
-            </h1>
-            <p className="font-accent text-sm text-[#C4D0CD]">New Zealand</p>
+            <Image
+              src="/logo.svg"
+              alt="Portable Spas New Zealand"
+              width={180}
+              height={35}
+              className="brightness-0 invert opacity-90"
+              priority
+            />
           </div>
           <button
             onClick={handleLogout}

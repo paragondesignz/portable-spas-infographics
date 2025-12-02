@@ -58,7 +58,28 @@ IMAGERY STYLE:
 - Warm, inviting, grounded in reality
 - Aspirational but achievable ("I could have that")
 - Focus on relaxation, family, wellbeing
-- Natural settings, New Zealand lifestyle`,
+- Natural settings, New Zealand lifestyle
+
+LOGO USAGE (CRITICAL - must follow these rules):
+The logo consists of:
+1. "PORTABLE SPAS" in bold, clean, uppercase sans-serif (like the headline font)
+2. "New Zealand" in elegant flowing script below, slightly smaller
+
+Logo placement rules:
+- Include the logo on every infographic, typically in a corner or footer area
+- Ensure adequate clear space around the logo (at least the height of the 'O' in PORTABLE)
+- Never crowd the logo with other elements
+
+Logo color rules (MUST FOLLOW):
+- On DARK backgrounds (Silvertide #4B5E5A, dark images): Use LIGHT logo (Linen #E3DEC8 or white)
+- On LIGHT backgrounds (Linen #E3DEC8, Tidemist #C4D0CD, white): Use DARK logo (Silvertide #4B5E5A)
+- On Soilstone #907E59 backgrounds: Use Linen #E3DEC8 logo
+
+NEVER do these with the logo:
+- Never use low contrast (dark logo on dark, light on light)
+- Never flip, rotate, or distort the logo
+- Never use colors outside the brand palette
+- Never place logo on busy/cluttered areas without a clear background`,
 
     'modern-minimal': `Style: Modern Minimal
 - Use generous whitespace and clean layouts
