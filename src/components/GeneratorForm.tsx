@@ -157,10 +157,29 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
 
       {ragContext && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-          <p className="text-sm font-medium text-green-800 mb-1">
-            RAG Context Retrieved:
-          </p>
-          <p className="text-sm text-green-700 line-clamp-3">{ragContext}</p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm font-medium text-green-800">
+              RAG Context Retrieved:
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('rag-context-content');
+                if (el) {
+                  el.classList.toggle('line-clamp-4');
+                  const btn = document.getElementById('rag-toggle-btn');
+                  if (btn) {
+                    btn.textContent = el.classList.contains('line-clamp-4') ? 'Show more' : 'Show less';
+                  }
+                }
+              }}
+              id="rag-toggle-btn"
+              className="text-xs text-green-600 hover:text-green-800 underline"
+            >
+              Show more
+            </button>
+          </div>
+          <p id="rag-context-content" className="text-sm text-green-700 line-clamp-4 whitespace-pre-wrap">{ragContext}</p>
         </div>
       )}
 

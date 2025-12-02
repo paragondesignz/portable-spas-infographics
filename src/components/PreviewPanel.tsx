@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import type { InfographicRecord } from '@/types';
+import Lightbox from './Lightbox';
 
 interface PreviewPanelProps {
   imageUrl: string | null;
@@ -13,6 +15,8 @@ export default function PreviewPanel({
   isGenerating,
   selectedRecord,
 }: PreviewPanelProps) {
+  const [showLightbox, setShowLightbox] = useState(false);
+
   const handleDownload = async () => {
     if (!imageUrl) return;
 
@@ -67,11 +71,24 @@ export default function PreviewPanel({
             <p className="text-sm text-gray-400 mt-1">This may take up to 60 seconds</p>
           </div>
         ) : imageUrl ? (
-          <img
-            src={imageUrl}
-            alt="Generated infographic"
-            className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
-          />
+          <button
+            onClick={() => setShowLightbox(true)}
+            className="relative group cursor-zoom-in"
+          >
+            <img
+              src={imageUrl}
+              alt="Generated infographic"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-lg flex items-center justify-center">
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                </svg>
+                Click to enlarge
+              </span>
+            </div>
+          </button>
         ) : (
           <div className="text-center text-gray-400">
             <svg
@@ -107,6 +124,15 @@ export default function PreviewPanel({
             </p>
           </div>
         </div>
+      )}
+
+      {/* Lightbox */}
+      {showLightbox && imageUrl && (
+        <Lightbox
+          imageUrl={imageUrl}
+          onClose={() => setShowLightbox(false)}
+          filename={`infographic-${selectedRecord?.id || 'new'}.png`}
+        />
       )}
     </div>
   );

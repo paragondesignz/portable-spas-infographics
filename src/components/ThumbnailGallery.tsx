@@ -80,9 +80,17 @@ export default function ThumbnailGallery({
               }`}
             >
               <img
-                src={record.thumbnailUrl}
-                alt={record.prompt.substring(0, 50)}
-                className="w-full aspect-square object-cover"
+                src={record.thumbnailUrl || record.url}
+                alt={record.prompt?.substring(0, 50) || 'Infographic'}
+                className="w-full aspect-square object-cover bg-gray-100"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = record.url;
+                  target.onerror = () => {
+                    target.style.display = 'none';
+                    target.parentElement?.classList.add('bg-gray-300');
+                  };
+                }}
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition">
                 <button
