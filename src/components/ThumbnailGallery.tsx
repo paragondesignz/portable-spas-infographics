@@ -79,19 +79,19 @@ export default function ThumbnailGallery({
                   : 'border-transparent hover:border-gray-300'
               }`}
             >
-              <img
-                src={record.thumbnailUrl || record.url}
-                alt={record.prompt?.substring(0, 50) || 'Infographic'}
-                className="w-full aspect-square object-cover bg-gray-100"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = record.url;
-                  target.onerror = () => {
-                    target.style.display = 'none';
-                    target.parentElement?.classList.add('bg-gray-300');
-                  };
-                }}
-              />
+              <div className="w-full aspect-square bg-gray-200 flex items-center justify-center">
+                <img
+                  src={record.thumbnailUrl || record.url}
+                  alt={record.prompt?.substring(0, 50) || 'Infographic'}
+                  className="max-w-full max-h-full object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    if (target.src !== record.url) {
+                      target.src = record.url;
+                    }
+                  }}
+                />
+              </div>
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition">
                 <button
                   onClick={(e) => handleDelete(e, record.id)}

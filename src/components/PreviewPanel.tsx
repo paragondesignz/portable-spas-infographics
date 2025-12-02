@@ -63,7 +63,7 @@ export default function PreviewPanel({
         )}
       </div>
 
-      <div className="aspect-video flex items-center justify-center p-4 min-h-[400px]">
+      <div className="flex items-center justify-center p-4 min-h-[400px] max-h-[600px]">
         {isGenerating ? (
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
@@ -73,14 +73,14 @@ export default function PreviewPanel({
         ) : imageUrl ? (
           <button
             onClick={() => setShowLightbox(true)}
-            className="relative group cursor-zoom-in"
+            className="relative group cursor-zoom-in w-full h-full flex items-center justify-center"
           >
             <img
               src={imageUrl}
               alt="Generated infographic"
-              className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+              className="max-w-full max-h-[560px] w-auto h-auto object-contain rounded-lg shadow-lg"
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-lg flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-lg flex items-center justify-center pointer-events-none">
               <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
