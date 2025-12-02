@@ -233,13 +233,17 @@ export async function generateInfographic(
   // Add logo-specific instructions if logo is included
   const logoInstructions = includeLogo
     ? `
-BRAND LOGO INSTRUCTIONS (THE FIRST IMAGE PROVIDED IS THE OFFICIAL LOGO):
-Include the provided logo in the infographic following these rules:
-- Position in a corner (bottom-right or top-left preferred) or footer area
-- Maintain clear space around the logo
-- On dark backgrounds (#4B5E5A): Use light logo (#E3DEC8 or white)
-- On light backgrounds (#E3DEC8, #C4D0CD, white): Use dark logo (#4B5E5A)
-- Never distort or modify the logo proportions
+BRAND LOGO - CRITICAL (THE FIRST IMAGE IS THE LOGO - COPY IT EXACTLY):
+The first reference image provided is the official "Portable Spas New Zealand" logo. You MUST include this logo in the infographic.
+
+LOGO REQUIREMENTS:
+1. COPY THE LOGO EXACTLY as provided - do not redraw, recreate, or interpret it
+2. The logo has two parts: "PORTABLE SPAS" in bold uppercase, and "New Zealand" in script below
+3. Reproduce BOTH parts exactly as shown in the reference image
+4. Position: Place in bottom-right corner with adequate padding from edges
+5. Size: Make it clearly visible but not dominant (roughly 10-15% of image width)
+6. DO NOT modify, stretch, rotate, or distort the logo in any way
+7. Ensure adequate contrast - place on a clear background area
 
 `
     : '';

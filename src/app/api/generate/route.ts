@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate the infographic
-    const { imageData, mimeType, textResponse } = await generateInfographic(
+    const { imageData, mimeType } = await generateInfographic(
       fullPrompt,
       allReferenceImages,
       aspectRatio as AspectRatio,
