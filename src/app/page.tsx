@@ -77,7 +77,7 @@ export default function Home() {
       {/* Header */}
       <header className="bg-[#4B5E5A] shadow-sm border-b border-[#3d4e4a]">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
+          <div className="flex items-center gap-6">
             <Image
               src="/logo.svg"
               alt="Portable Spas New Zealand"
@@ -86,6 +86,10 @@ export default function Home() {
               className="brightness-0 invert opacity-90"
               priority
             />
+            <div className="hidden sm:block h-8 w-px bg-[#E3DEC8]/30"></div>
+            <h1 className="hidden sm:block font-heading text-xl font-semibold text-[#E3DEC8]">
+              Infographic Generator
+            </h1>
           </div>
           <button
             onClick={handleLogout}
@@ -98,9 +102,6 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
-        <h1 className="font-heading text-3xl font-bold text-[#4B5E5A] mb-6">
-          Infographic Generator
-        </h1>
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Left Column - Form */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
