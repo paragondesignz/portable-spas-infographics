@@ -97,7 +97,7 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
 
       if (data.success && data.imageUrl && data.id) {
         onGenerate(data.imageUrl, data.id);
-        setPrompt('');
+        // Keep prompt for easy regeneration with same content
         setSelectedImages([]);
       } else {
         setError(data.error || 'Generation failed');
