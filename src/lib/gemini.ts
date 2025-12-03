@@ -202,38 +202,30 @@ export async function generateInfographic(
   const graphicInstructions = graphicStyle ? getGraphicStyleInstructions(graphicStyle) : '';
 
   // Add logo-specific instructions if logo is included
+  // Following Gemini docs: use narrative description, be specific about text content and font characteristics
   const logoInstructions = includeLogo
     ? `
-BRAND LOGO - CRITICAL (THE FIRST IMAGE IS THE LOGO - COPY IT EXACTLY):
-The first reference image provided is the official "Portable Spas New Zealand" logo. You MUST include this logo in the infographic.
+BRAND LOGO ELEMENT:
+The first reference image shows the company logo that should appear in the bottom-right corner of the infographic.
 
-LOGO REQUIREMENTS:
-1. COPY THE LOGO EXACTLY as provided - do not redraw, recreate, or interpret it
-2. The logo has two parts: "PORTABLE SPAS" in bold uppercase, and "New Zealand" in script below
-3. Reproduce BOTH parts exactly as shown in the reference image
-4. Position: Place in bottom-right corner with adequate padding from edges
-5. Size: Make it clearly visible but not dominant (roughly 10-15% of image width)
-6. DO NOT modify, stretch, rotate, or distort the logo in any way
-7. Ensure adequate contrast - place on a clear background area
+The logo contains two lines of text stacked vertically:
+- Top line: The words "PORTABLE SPAS" rendered in bold, uppercase, clean sans-serif lettering with strong weight and tight tracking
+- Bottom line: The words "New Zealand" rendered in an elegant flowing script font, slightly smaller, positioned centered below
+
+Render this logo text exactly as shown in the reference image, maintaining the same two-line stacked arrangement, the same font styles (bold sans-serif on top, elegant script below), and the same proportions between the two text elements. Place it in the bottom-right corner with comfortable padding from the edges, sized at roughly 12% of the image width. Ensure it sits on a clean background area with good contrast.
 
 `
     : '';
 
-  // Add the prompt
-  const enhancedPrompt = `Create a professional, visually appealing infographic for Portable Spas New Zealand based on the following information.
+  // Add the prompt - following Gemini docs: use narrative description, describe the scene
+  const enhancedPrompt = `Create a professional infographic for Portable Spas New Zealand. The design should feel clean, modern, and polished - suitable for marketing materials.
 
-CRITICAL RULES - READ FIRST:
-- NEVER include color names, hex codes, style names, or any design instruction text as visible text in the infographic
-- NEVER write words like "Silvertide", "Tidemist", "Linen", "Soilstone", or any color/style terminology as text
-- The design instructions below are for YOUR reference only - they should influence the visual design, NOT appear as text content
-- Only include text that is part of the actual content to visualize (provided at the end)
+Important: The only text content that should appear in the infographic is the actual content provided below. Do not include any color names, style names, or design terminology as visible text.
 
-The design should be clean, modern, and suitable for marketing materials.
-Use a cohesive color scheme, clear typography, and visual hierarchy to present the information effectively.
-Include relevant icons or illustrations where appropriate.
-${logoInstructions}
-${graphicInstructions ? `${graphicInstructions}\n\n` : ''}${styleInstructions ? `COLOR SCHEME (apply visually, do NOT write as text):\n${styleInstructions}\n\n` : ''}CONTENT TO VISUALIZE (this is the only text that should appear in the infographic):
-${prompt}`;
+${logoInstructions}${graphicInstructions ? `Visual Style:\n${graphicInstructions}\n\n` : ''}${styleInstructions ? `Color Palette:\n${styleInstructions}\n\n` : ''}Content to visualize in the infographic:
+${prompt}
+
+Compose this as a cohesive infographic with clear visual hierarchy, using icons and illustrations to support the content. The layout should guide the viewer through the information naturally.`;
 
   contentParts.push(enhancedPrompt);
 
