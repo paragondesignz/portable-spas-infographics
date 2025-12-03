@@ -192,7 +192,7 @@ export async function generateInfographic(
 ): Promise<{ imageData: string; mimeType: string; textResponse?: string }> {
   const ai = getGeminiClient();
 
-  // Build content parts
+  // Build content parts - following Gemini docs: interleave images with descriptive text
   const contentParts: Array<string | { inlineData: { mimeType: string; data: string } }> = [];
 
   // Get style-specific instructions (color scheme)
@@ -201,52 +201,8 @@ export async function generateInfographic(
   // Get graphic style instructions (visual treatment)
   const graphicInstructions = graphicStyle ? getGraphicStyleInstructions(graphicStyle) : '';
 
-  // Add logo-specific instructions if logo is included
-  // Following Gemini docs: use narrative description, be specific about text content and font characteristics
-  const logoInstructions = includeLogo
-    ? `
-BRAND LOGO ELEMENT:
-The first reference image shows the company logo that should appear in the bottom-right corner of the infographic.
-
-The logo contains two lines of text stacked vertically:
-- Top line: The words "PORTABLE SPAS" rendered in bold, uppercase, clean sans-serif lettering with strong weight and tight tracking
-- Bottom line: The words "New Zealand" rendered in an elegant flowing script font, slightly smaller, positioned centered below
-
-Render this logo text exactly as shown in the reference image, maintaining the same two-line stacked arrangement, the same font styles (bold sans-serif on top, elegant script below), and the same proportions between the two text elements.
-
-CRITICAL - LOGO CLEAR SPACE REQUIREMENT:
-The logo must have clear space around it equal to the height of the letter 'O' in "PORTABLE" on all sides. No text, graphics, icons, or other elements may encroach into this clear space zone. This prevents the logo from looking cluttered or suffocated. Plan your layout to reserve this protected area in the bottom-right corner before placing other content.
-
-Place the logo in the bottom-right corner with comfortable padding from the edges, sized at roughly 12% of the image width. Ensure it sits on a clean background area with good contrast.
-
-`
-    : '';
-
-  // Add the prompt - following Gemini docs: use narrative description, describe the scene
-  const enhancedPrompt = `Create a professional infographic for Portable Spas New Zealand. The design should feel clean, modern, and polished - suitable for marketing materials.
-
-Important text guidelines:
-- The only text content that should appear in the infographic is the actual content provided below
-- Do not include any color names, style names, or design terminology as visible text
-- Do NOT include standalone URLs or web addresses
-- Do NOT use anchor text like "Download Here", "Click Here", or "Learn More"
-- Instead, use friendly natural phrases like:
-  - "Visit our online help centre at portablespas.co.nz"
-  - "Ask our AI Assistant at portablespas.co.nz"
-  - "Contact our service team" or "Contact our sales team"
-  - "Check our website for more details"
-- Email addresses may be shown naturally: service@portablespas.co.nz or sales@portablespas.co.nz
-
-${logoInstructions}${graphicInstructions ? `Visual Style:\n${graphicInstructions}\n\n` : ''}${styleInstructions ? `Color Palette:\n${styleInstructions}\n\n` : ''}Content to visualize in the infographic:
-${prompt}
-
-Compose this as a cohesive infographic with clear visual hierarchy, using icons and illustrations to support the content. The layout should guide the viewer through the information naturally.`;
-
-  contentParts.push(enhancedPrompt);
-
-  // Add reference images if provided
-  for (const imageBase64 of referenceImages) {
-    // Extract mime type and data from base64 string
+  // Helper to parse and add image to content parts
+  const addImagePart = (imageBase64: string): boolean => {
     const matches = imageBase64.match(/^data:(.+);base64,(.+)$/);
     if (matches) {
       contentParts.push({
@@ -255,8 +211,105 @@ Compose this as a cohesive infographic with clear visual hierarchy, using icons 
           data: matches[2],
         },
       });
+      return true;
+    }
+    return false;
+  };
+
+  // Separate logo from user reference images
+  // Logo is always first in the array when present
+  const logoImage = includeLogo && referenceImages.length > 0 ? referenceImages[0] : null;
+  const userReferenceImages = includeLogo ? referenceImages.slice(1) : referenceImages;
+
+  // Start with context about the task and reference images
+  // Following Gemini docs: "Describe the scene, don't just list keywords"
+  let introPrompt = `You are creating a professional marketing infographic for Portable Spas New Zealand. I'm providing reference images that you MUST closely follow for visual consistency.`;
+
+  // Add reference image guidance if we have user reference images
+  if (userReferenceImages.length > 0) {
+    introPrompt += `
+
+CRITICAL REFERENCE IMAGE INSTRUCTIONS:
+I am providing ${userReferenceImages.length} reference image${userReferenceImages.length > 1 ? 's' : ''} that demonstrate the exact visual style, color palette, layout approach, and design aesthetic I want you to replicate. Study these reference images carefully and match their visual characteristics as closely as possible:
+
+- Match the COLOR SCHEME: Use the same colors, tones, and color relationships shown in the references
+- Match the ILLUSTRATION STYLE: Replicate the same style of icons, graphics, and visual elements
+- Match the LAYOUT PATTERNS: Follow similar composition, spacing, and visual hierarchy
+- Match the TYPOGRAPHY FEEL: Use similar font weights, sizes, and text styling
+- Match the OVERALL MOOD: Capture the same visual energy and aesthetic feeling
+
+The reference images are your primary guide for how the final infographic should look. Treat them as a strict visual template to follow.`;
+  }
+
+  contentParts.push(introPrompt);
+
+  // Add user reference images FIRST with descriptions (interleaved per Gemini docs)
+  // These should come before the logo so they establish the style context
+  if (userReferenceImages.length > 0) {
+    for (let i = 0; i < userReferenceImages.length; i++) {
+      const imageBase64 = userReferenceImages[i];
+      const imageNum = i + 1;
+
+      // Add descriptive text immediately before the image
+      contentParts.push(`\nREFERENCE IMAGE ${imageNum} - Study this image carefully and replicate its visual style:`);
+
+      // Add the image immediately after its description
+      addImagePart(imageBase64);
+
+      // Add follow-up instruction after the image
+      contentParts.push(`Use Reference Image ${imageNum} above as a visual template. Match its colors, illustration style, layout approach, and overall aesthetic in the infographic you create.`);
     }
   }
+
+  // Add logo image with its specific instructions (interleaved)
+  if (logoImage) {
+    contentParts.push(`
+BRAND LOGO REFERENCE IMAGE - This shows the exact logo to include in your design:`);
+
+    addImagePart(logoImage);
+
+    contentParts.push(`LOGO REQUIREMENTS:
+The image above shows the company logo that MUST appear in the bottom-right corner of the infographic.
+
+The logo contains two lines of text stacked vertically:
+- Top line: "PORTABLE SPAS" in bold, uppercase, clean sans-serif lettering with strong weight and tight tracking
+- Bottom line: "New Zealand" in an elegant flowing script font, slightly smaller, centered below
+
+You MUST render this logo text exactly as shown in the reference image above:
+- Maintain the exact same two-line stacked arrangement
+- Use the same font styles (bold sans-serif on top, elegant script below)
+- Keep the same proportions between the two text elements
+- Match the visual weight and character spacing
+
+LOGO CLEAR SPACE REQUIREMENT:
+The logo must have clear space around it equal to the height of the letter 'O' in "PORTABLE" on all sides. No text, graphics, icons, or other elements may encroach into this protected zone.
+
+LOGO PLACEMENT:
+Position the logo in the bottom-right corner with comfortable padding from edges, sized at roughly 12% of image width, on a clean background with good contrast.`);
+  }
+
+  // Now add the main design instructions and content
+  const mainPrompt = `
+DESIGN REQUIREMENTS:
+Create a professional, polished infographic suitable for marketing materials.
+
+TEXT GUIDELINES:
+- Only include the actual content text provided below - no design terminology or color names as visible text
+- Do NOT include standalone URLs or web addresses
+- Do NOT use link-styled text like "Download Here", "Click Here", or "Learn More"
+- Instead use friendly natural phrases like:
+  - "Visit our online help centre at portablespas.co.nz"
+  - "Ask our AI Assistant at portablespas.co.nz"
+  - "Contact our service team" or "Contact our sales team"
+- Email addresses may be shown naturally: service@portablespas.co.nz or sales@portablespas.co.nz
+
+${graphicInstructions ? `GRAPHIC STYLE TO APPLY:\n${graphicInstructions}\n\n` : ''}${styleInstructions ? `COLOR PALETTE TO USE:\n${styleInstructions}\n\n` : ''}CONTENT TO VISUALIZE:
+${prompt}
+
+COMPOSITION:
+Create a cohesive infographic with clear visual hierarchy, using icons and illustrations to support the content. The layout should guide the viewer through the information naturally.${userReferenceImages.length > 0 ? '\n\nREMEMBER: Your output MUST closely match the visual style of the reference images provided above. They are your primary guide for colors, illustration style, layout, and overall aesthetic.' : ''}`;
+
+  contentParts.push(mainPrompt);
 
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-image-preview',
