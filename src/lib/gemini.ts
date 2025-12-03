@@ -228,13 +228,14 @@ Place the logo in the bottom-right corner with comfortable padding from the edge
 Important text guidelines:
 - The only text content that should appear in the infographic is the actual content provided below
 - Do not include any color names, style names, or design terminology as visible text
-- Do not include external URLs from the source content unless they are official Portable Spas NZ URLs
-- NEVER use anchor text like "Download Here", "Click Here", or "Learn More" - instead show the actual full URL so users can see and use it
-- You MAY include these official Portable Spas NZ contact details and URLs where appropriate:
-  - Website: portablespas.co.nz
-  - Service email: service@portablespas.co.nz
-  - Sales email: sales@portablespas.co.nz
-- When referencing resources, show the actual URL rather than hiding it behind anchor text
+- Do NOT include standalone URLs or web addresses
+- Do NOT use anchor text like "Download Here", "Click Here", or "Learn More"
+- Instead, use friendly natural phrases like:
+  - "Visit our online help centre at portablespas.co.nz"
+  - "Ask our AI Assistant at portablespas.co.nz"
+  - "Contact our service team" or "Contact our sales team"
+  - "Check our website for more details"
+- Email addresses may be shown naturally: service@portablespas.co.nz or sales@portablespas.co.nz
 
 ${logoInstructions}${graphicInstructions ? `Visual Style:\n${graphicInstructions}\n\n` : ''}${styleInstructions ? `Color Palette:\n${styleInstructions}\n\n` : ''}Content to visualize in the infographic:
 ${prompt}
