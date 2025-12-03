@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { jsPDF } from 'jspdf';
 
 interface DownloadModalProps {
   imageUrl: string;
@@ -8,7 +9,7 @@ interface DownloadModalProps {
   defaultFilename?: string;
 }
 
-type ImageFormat = 'png' | 'jpeg' | 'webp';
+type ImageFormat = 'png' | 'jpeg' | 'webp' | 'pdf';
 
 interface ImageDimensions {
   width: number;
@@ -19,6 +20,7 @@ const FORMAT_OPTIONS: { value: ImageFormat; label: string; supportsQuality: bool
   { value: 'png', label: 'PNG (lossless)', supportsQuality: false },
   { value: 'jpeg', label: 'JPEG (smaller file)', supportsQuality: true },
   { value: 'webp', label: 'WebP (modern, smallest)', supportsQuality: true },
+  { value: 'pdf', label: 'PDF (print-ready)', supportsQuality: false },
 ];
 
 const RESIZE_PRESETS = [
@@ -41,7 +43,6 @@ export default function DownloadModal({
   const [useCustomSize, setUseCustomSize] = useState(false);
   const [originalDimensions, setOriginalDimensions] = useState<ImageDimensions | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [estimatedSize, setEstimatedSize] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
@@ -115,39 +116,65 @@ export default function DownloadModal({
       canvas.width = dimensions.width;
       canvas.height = dimensions.height;
 
-      // Fill with white background for JPEG (no transparency)
-      if (format === 'jpeg') {
+      // Fill with white background for JPEG and PDF (no transparency)
+      if (format === 'jpeg' || format === 'pdf') {
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
       ctx.drawImage(imageRef.current, 0, 0, dimensions.width, dimensions.height);
 
-      const mimeType = `image/${format}`;
-      const qualityValue = format === 'png' ? undefined : quality / 100;
+      if (format === 'pdf') {
+        // Generate PDF
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) {
-            console.error('Failed to create blob');
+        // Calculate PDF dimensions (convert pixels to mm at 96 DPI)
+        const pxToMm = 25.4 / 96;
+        const pdfWidth = dimensions.width * pxToMm;
+        const pdfHeight = dimensions.height * pxToMm;
+
+        // Determine orientation
+        const orientation = pdfWidth > pdfHeight ? 'landscape' : 'portrait';
+
+        // Create PDF with custom size
+        const pdf = new jsPDF({
+          orientation,
+          unit: 'mm',
+          format: [pdfWidth, pdfHeight],
+        });
+
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`${defaultFilename}.pdf`);
+        setProcessing(false);
+        onClose();
+      } else {
+        // Generate image formats
+        const mimeType = `image/${format}`;
+        const qualityValue = format === 'png' ? undefined : quality / 100;
+
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              console.error('Failed to create blob');
+              setProcessing(false);
+              return;
+            }
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${defaultFilename}.${format}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
             setProcessing(false);
-            return;
-          }
-
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `${defaultFilename}.${format}`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          setProcessing(false);
-          onClose();
-        },
-        mimeType,
-        qualityValue
-      );
+            onClose();
+          },
+          mimeType,
+          qualityValue
+        );
+      }
     } catch (error) {
       console.error('Download failed:', error);
       setProcessing(false);
