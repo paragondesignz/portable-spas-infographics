@@ -223,9 +223,12 @@ Render this logo text exactly as shown in the reference image, maintaining the s
 Important text guidelines:
 - The only text content that should appear in the infographic is the actual content provided below
 - Do not include any color names, style names, or design terminology as visible text
-- NEVER include actual URLs or web addresses in the infographic (e.g., no "www.example.com" or "https://...")
-- Instead of URLs, use friendly phrases like "Visit our website", "Check our online help centre", "Contact us online", or "Ask our AI assistant"
-- If the source content contains URLs, replace them with these friendly call-to-action phrases
+- Do not include external URLs or web addresses from the source content
+- You MAY include these official Portable Spas NZ contact details where appropriate:
+  - Website: portablespas.co.nz
+  - Service email: service@portablespas.co.nz
+  - Sales email: sales@portablespas.co.nz
+- For any other links or references, use friendly phrases like "Visit our website", "Contact our team", or "Ask our AI assistant"
 
 ${logoInstructions}${graphicInstructions ? `Visual Style:\n${graphicInstructions}\n\n` : ''}${styleInstructions ? `Color Palette:\n${styleInstructions}\n\n` : ''}Content to visualize in the infographic:
 ${prompt}
