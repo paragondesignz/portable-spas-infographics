@@ -270,7 +270,7 @@ ${styleInstructions ? `Use this color approach: ${styleInstructions}` : ''}`;
   contentParts.push(fullPrompt);
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-preview-image',
+    model: 'gemini-3-pro-image-preview',
     contents: contentParts,
     config: {
       responseModalities: ['TEXT', 'IMAGE'],
