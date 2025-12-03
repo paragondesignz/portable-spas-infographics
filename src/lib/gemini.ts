@@ -229,11 +229,12 @@ Important text guidelines:
 - The only text content that should appear in the infographic is the actual content provided below
 - Do not include any color names, style names, or design terminology as visible text
 - Do not include external URLs or web addresses from the source content
+- NEVER include text styled as clickable links (e.g., "Download Here", "Click Here", "Learn More" with underlines or link styling) - these cannot function in a static image
 - You MAY include these official Portable Spas NZ contact details where appropriate:
   - Website: portablespas.co.nz
   - Service email: service@portablespas.co.nz
   - Sales email: sales@portablespas.co.nz
-- For any other links or references, use friendly phrases like "Visit our website", "Contact our team", or "Ask our AI assistant"
+- For any other links or references, use friendly phrases like "Visit our website", "Contact our team", or "Ask our AI assistant" - but do NOT style them as clickable links
 
 ${logoInstructions}${graphicInstructions ? `Visual Style:\n${graphicInstructions}\n\n` : ''}${styleInstructions ? `Color Palette:\n${styleInstructions}\n\n` : ''}Content to visualize in the infographic:
 ${prompt}
