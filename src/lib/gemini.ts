@@ -212,7 +212,12 @@ The logo contains two lines of text stacked vertically:
 - Top line: The words "PORTABLE SPAS" rendered in bold, uppercase, clean sans-serif lettering with strong weight and tight tracking
 - Bottom line: The words "New Zealand" rendered in an elegant flowing script font, slightly smaller, positioned centered below
 
-Render this logo text exactly as shown in the reference image, maintaining the same two-line stacked arrangement, the same font styles (bold sans-serif on top, elegant script below), and the same proportions between the two text elements. Place it in the bottom-right corner with comfortable padding from the edges, sized at roughly 12% of the image width. Ensure it sits on a clean background area with good contrast.
+Render this logo text exactly as shown in the reference image, maintaining the same two-line stacked arrangement, the same font styles (bold sans-serif on top, elegant script below), and the same proportions between the two text elements.
+
+CRITICAL - LOGO CLEAR SPACE REQUIREMENT:
+The logo must have clear space around it equal to the height of the letter 'O' in "PORTABLE" on all sides. No text, graphics, icons, or other elements may encroach into this clear space zone. This prevents the logo from looking cluttered or suffocated. Plan your layout to reserve this protected area in the bottom-right corner before placing other content.
+
+Place the logo in the bottom-right corner with comfortable padding from the edges, sized at roughly 12% of the image width. Ensure it sits on a clean background area with good contrast.
 
 `
     : '';
