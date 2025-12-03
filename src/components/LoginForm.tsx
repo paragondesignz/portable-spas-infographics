@@ -1,6 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { LogIn } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import ShimmerText from '@/components/kokonutui/shimmer-text';
 
 interface LoginFormProps {
   onLogin: () => void;
@@ -38,13 +43,18 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-50">
-      <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full mx-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#C4D0CD] to-[#E3DEC8]">
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full mx-4"
+      >
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          <h1 className="font-heading text-2xl font-bold text-[#4B5E5A] mb-2">
             Portable Spas NZ
           </h1>
-          <p className="text-gray-600">Infographic Generator</p>
+          <p className="text-[#907E59]">Infographic Generator</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -55,30 +65,67 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
             >
               Password
             </label>
-            <input
+            <Input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+              className="w-full focus:ring-[#4B5E5A] focus:border-[#4B5E5A]"
               placeholder="Enter password"
               required
             />
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</p>
-          )}
+          <AnimatePresence>
+            {error && (
+              <motion.p
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="text-red-500 text-sm bg-red-50 p-2 rounded"
+              >
+                {error}
+              </motion.p>
+            )}
+          </AnimatePresence>
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition"
+            className="w-full bg-[#4B5E5A] hover:bg-[#3d4e4a] text-white font-medium transition-all duration-200 gap-2"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
+            <AnimatePresence mode="wait">
+              {loading ? (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center gap-2"
+                >
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                  />
+                  <span>Signing in...</span>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="idle"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center gap-2"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Sign In</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </Button>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }

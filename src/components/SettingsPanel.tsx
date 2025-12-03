@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'motion/react';
 import { ASPECT_RATIOS, RESOLUTIONS, type AspectRatio, type Resolution } from '@/types';
 
 interface SettingsPanelProps {
@@ -26,18 +27,20 @@ export default function SettingsPanel({
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {ASPECT_RATIOS.map((ratio) => (
-            <button
+            <motion.button
               key={ratio.value}
               type="button"
               onClick={() => onAspectRatioChange(ratio.value)}
-              className={`px-3 py-2 text-sm rounded-lg border transition ${
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
                 aspectRatio === ratio.value
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'
+                  ? 'bg-[#4B5E5A] text-white border-[#4B5E5A]'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#4B5E5A]'
               }`}
             >
               {ratio.label}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -48,26 +51,32 @@ export default function SettingsPanel({
         </label>
         <div className="flex gap-2">
           {RESOLUTIONS.map((res) => (
-            <button
+            <motion.button
               key={res.value}
               type="button"
               onClick={() => onResolutionChange(res.value)}
-              className={`flex-1 px-4 py-2 text-sm rounded-lg border transition ${
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`flex-1 px-4 py-2 text-sm rounded-lg border transition-colors ${
                 resolution === res.value
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'
+                  ? 'bg-[#4B5E5A] text-white border-[#4B5E5A]'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#4B5E5A]'
               }`}
             >
               {res.label}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
 
       {currentDimensions && (
-        <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
+        <motion.div
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg"
+        >
           Output: <span className="font-medium">{currentDimensions}</span> pixels
-        </div>
+        </motion.div>
       )}
     </div>
   );

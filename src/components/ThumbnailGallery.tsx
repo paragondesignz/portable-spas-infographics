@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Trash2, Image as ImageIcon } from 'lucide-react';
+import Loader from '@/components/kokonutui/loader';
 import type { InfographicRecord } from '@/types';
 
 interface ThumbnailGalleryProps {
@@ -82,7 +85,13 @@ export default function ThumbnailGallery({
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-4">
         <h3 className="font-semibold text-gray-800 mb-3">Generated Infographics</h3>
-        <div className="text-center py-8 text-gray-500">Loading...</div>
+        <div className="flex items-center justify-center py-8">
+          <Loader
+            title="Loading gallery..."
+            subtitle="Fetching your infographics"
+            size="sm"
+          />
+        </div>
       </div>
     );
   }
@@ -94,44 +103,57 @@ export default function ThumbnailGallery({
       </h3>
 
       {infographics.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-8 text-gray-500"
+        >
+          <ImageIcon className="mx-auto h-12 w-12 mb-3 stroke-1 text-gray-300" />
           <p>No infographics generated yet.</p>
           <p className="text-sm">Your creations will appear here.</p>
-        </div>
+        </motion.div>
       ) : (
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 max-h-48 overflow-y-auto">
-          {infographics.map((record) => (
-            <div
-              key={record.id}
-              onClick={() => onSelect(record)}
-              className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                selectedId === record.id
-                  ? 'border-blue-500 ring-2 ring-blue-200'
-                  : 'border-gray-200 hover:border-gray-400'
-              }`}
-            >
-              <div className="aspect-square">
-                <ThumbnailImage
-                  src={record.url}
-                  alt={record.prompt?.substring(0, 50) || 'Infographic'}
-                />
-              </div>
-
-              {/* Delete button - only visible on hover */}
-              <button
-                onClick={(e) => handleDelete(e, record.id)}
-                className="absolute top-1 right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                title="Delete"
+          <AnimatePresence>
+            {infographics.map((record, index) => (
+              <motion.div
+                key={record.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2, delay: index * 0.03 }}
+                onClick={() => onSelect(record)}
+                className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                  selectedId === record.id
+                    ? 'border-[#4B5E5A] ring-2 ring-[#4B5E5A]/20'
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
               >
-                ×
-              </button>
+                <div className="aspect-square">
+                  <ThumbnailImage
+                    src={record.url}
+                    alt={record.prompt?.substring(0, 50) || 'Infographic'}
+                  />
+                </div>
 
-              {/* Aspect ratio label - only visible on hover */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900/70 to-transparent p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <p className="text-white text-xs truncate text-center">{record.aspectRatio}</p>
-              </div>
-            </div>
-          ))}
+                {/* Delete button - only visible on hover */}
+                <button
+                  onClick={(e) => handleDelete(e, record.id)}
+                  className="absolute top-1 right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                  title="Delete"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+
+                {/* Aspect ratio label - only visible on hover */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900/70 to-transparent p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-white text-xs truncate text-center">{record.aspectRatio}</p>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
     </div>

@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { motion } from 'motion/react';
 import LoginForm from '@/components/LoginForm';
 import GeneratorForm from '@/components/GeneratorForm';
 import PreviewPanel from '@/components/PreviewPanel';
 import ThumbnailGallery from '@/components/ThumbnailGallery';
+import Loader from '@/components/kokonutui/loader';
+import ShimmerText from '@/components/kokonutui/shimmer-text';
 import type { InfographicRecord } from '@/types';
 
 export default function Home() {
@@ -60,8 +63,12 @@ export default function Home() {
   // Loading state
   if (isAuthenticated === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#C4D0CD] to-[#E3DEC8]">
+        <Loader
+          title="Loading..."
+          subtitle="Preparing the infographic generator"
+          size="md"
+        />
       </div>
     );
   }
@@ -104,7 +111,12 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 py-6">
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Left Column - Form */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+          >
             <h2 className="font-heading text-lg font-semibold text-[#4B5E5A] mb-4">
               Create New Infographic
             </h2>
@@ -112,26 +124,35 @@ export default function Home() {
               onGenerate={handleGenerate}
               onGenerating={setIsGenerating}
             />
-          </div>
+          </motion.div>
 
           {/* Right Column - Preview */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
+          >
             <PreviewPanel
               imageUrl={currentImageUrl}
               isGenerating={isGenerating}
               selectedRecord={selectedRecord}
             />
-          </div>
+          </motion.div>
         </div>
 
         {/* Gallery Section */}
-        <div className="mt-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
+          className="mt-6"
+        >
           <ThumbnailGallery
             onSelect={handleSelectFromGallery}
             selectedId={selectedRecord?.id || null}
             refreshTrigger={refreshTrigger}
           />
-        </div>
+        </motion.div>
       </main>
 
       {/* Footer */}

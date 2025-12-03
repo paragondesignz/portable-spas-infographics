@@ -1,6 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import Loader from '@/components/kokonutui/loader';
 import SettingsPanel from './SettingsPanel';
 import ReferenceImageLibrary from './ReferenceImageLibrary';
 import StyleSelector from './StyleSelector';
@@ -120,12 +125,12 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
         >
           Infographic Content
         </label>
-        <textarea
+        <Textarea
           id="prompt"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           rows={6}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
+          className="w-full px-4 py-3 resize-none focus:ring-2 focus:ring-[#4B5E5A] focus:border-[#4B5E5A]"
           placeholder="Paste your text content here. Include key facts, statistics, features, or specifications you want to visualize in the infographic..."
         />
       </div>
@@ -188,41 +193,55 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
         </div>
       )}
 
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-          {error}
-        </div>
-      )}
+      <AnimatePresence mode="wait">
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"
+          >
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <button
+      <Button
         type="submit"
         disabled={loading || !prompt.trim()}
-        className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+        size="lg"
+        className="w-full bg-[#4B5E5A] hover:bg-[#3d4e4a] text-white py-3 px-6 font-semibold transition-all duration-200 flex items-center justify-center gap-2 group"
       >
-        {loading ? (
-          <>
-            <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-            Generating...
-          </>
-        ) : (
-          <>
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center gap-2"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 10V3L4 14h7v7l9-11h-7z"
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
               />
-            </svg>
-            Generate Infographic
-          </>
-        )}
-      </button>
+              <span>Generating...</span>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="idle"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center gap-2"
+            >
+              <Zap className="w-5 h-5 transition-transform group-hover:scale-110" />
+              <span>Generate Infographic</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Button>
     </form>
   );
 }
