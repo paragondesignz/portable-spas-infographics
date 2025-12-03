@@ -14,14 +14,29 @@ export default function Lightbox({ imageUrl, onClose, onDownload, filename = 'in
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
 
-  const handleZoomIn = () => setScale((s) => Math.min(s + 0.25, 5));
-  const handleZoomOut = () => setScale((s) => Math.max(s - 0.25, 0.5));
-  const handleReset = () => {
+  // Reset position when zooming back to 1 or below
+  const handleZoomIn = useCallback(() => {
+    setScale((s) => Math.min(s + 0.25, 5));
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    setScale((s) => {
+      const newScale = Math.max(s - 0.25, 1);
+      if (newScale <= 1) {
+        setPosition({ x: 0, y: 0 });
+      }
+      return newScale;
+    });
+  }, []);
+
+  const handleReset = useCallback(() => {
     setScale(1);
     setPosition({ x: 0, y: 0 });
-  };
+  }, []);
 
   const handleDownload = () => {
     if (onDownload) {
@@ -29,8 +44,31 @@ export default function Lightbox({ imageUrl, onClose, onDownload, filename = 'in
     }
   };
 
+  // Constrain position to keep image visible
+  const constrainPosition = useCallback((x: number, y: number, currentScale: number) => {
+    if (!containerRef.current || !imageRef.current) return { x, y };
+
+    const container = containerRef.current.getBoundingClientRect();
+    const img = imageRef.current;
+
+    // Calculate scaled image dimensions
+    const scaledWidth = img.naturalWidth * currentScale;
+    const scaledHeight = img.naturalHeight * currentScale;
+
+    // Calculate maximum allowed offset (keep at least 20% of image visible)
+    const minVisible = 0.2;
+    const maxX = Math.max(0, (scaledWidth - container.width * minVisible) / 2);
+    const maxY = Math.max(0, (scaledHeight - container.height * minVisible) / 2);
+
+    return {
+      x: Math.max(-maxX, Math.min(maxX, x)),
+      y: Math.max(-maxY, Math.min(maxY, y)),
+    };
+  }, []);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (scale > 1) {
+      e.preventDefault();
       setIsDragging(true);
       setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
     }
@@ -39,23 +77,60 @@ export default function Lightbox({ imageUrl, onClose, onDownload, filename = 'in
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (isDragging) {
-        setPosition({
-          x: e.clientX - dragStart.x,
-          y: e.clientY - dragStart.y,
-        });
+        const newX = e.clientX - dragStart.x;
+        const newY = e.clientY - dragStart.y;
+        const constrained = constrainPosition(newX, newY, scale);
+        setPosition(constrained);
       }
     },
-    [isDragging, dragStart]
+    [isDragging, dragStart, scale, constrainPosition]
   );
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
   }, []);
 
+  // Touch support
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (scale > 1 && e.touches.length === 1) {
+      const touch = e.touches[0];
+      setIsDragging(true);
+      setDragStart({ x: touch.clientX - position.x, y: touch.clientY - position.y });
+    }
+  };
+
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (isDragging && e.touches.length === 1) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const newX = touch.clientX - dragStart.x;
+        const newY = touch.clientY - dragStart.y;
+        const constrained = constrainPosition(newX, newY, scale);
+        setPosition(constrained);
+      }
+    },
+    [isDragging, dragStart, scale, constrainPosition]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    setScale((s) => Math.min(Math.max(s + delta, 0.5), 5));
+    setScale((s) => {
+      const newScale = Math.min(Math.max(s + delta, 1), 5);
+      if (newScale <= 1) {
+        setPosition({ x: 0, y: 0 });
+      } else {
+        // Constrain position when zooming out
+        const constrained = constrainPosition(position.x, position.y, newScale);
+        setPosition(constrained);
+      }
+      return newScale;
+    });
   };
 
   const handleKeyDown = useCallback(
@@ -65,22 +140,36 @@ export default function Lightbox({ imageUrl, onClose, onDownload, filename = 'in
       if (e.key === '-') handleZoomOut();
       if (e.key === '0') handleReset();
     },
-    [onClose]
+    [onClose, handleZoomIn, handleZoomOut, handleReset]
   );
+
+  // Track image size for constraint calculations
+  const handleImageLoad = () => {
+    if (imageRef.current) {
+      setImageSize({
+        width: imageRef.current.naturalWidth,
+        height: imageRef.current.naturalHeight,
+      });
+    }
+  };
 
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
     document.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
     };
-  }, [handleMouseMove, handleMouseUp, handleKeyDown]);
+  }, [handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd, handleKeyDown]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex flex-col">
@@ -148,14 +237,19 @@ export default function Lightbox({ imageUrl, onClose, onDownload, filename = 'in
       {/* Image Container */}
       <div
         ref={containerRef}
-        className="flex-1 flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing"
+        className={`flex-1 flex items-center justify-center overflow-hidden ${
+          scale > 1 ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'
+        }`}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onWheel={handleWheel}
         onClick={(e) => {
-          if (e.target === containerRef.current) onClose();
+          // Only close if clicking the background, not the image, and not dragging
+          if (e.target === containerRef.current && !isDragging) onClose();
         }}
       >
         <img
+          ref={imageRef}
           src={imageUrl}
           alt="Enlarged infographic"
           className="max-w-none select-none"
@@ -164,6 +258,7 @@ export default function Lightbox({ imageUrl, onClose, onDownload, filename = 'in
             transition: isDragging ? 'none' : 'transform 0.1s ease-out',
           }}
           draggable={false}
+          onLoad={handleImageLoad}
         />
       </div>
 
