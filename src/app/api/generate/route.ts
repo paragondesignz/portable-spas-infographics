@@ -47,8 +47,8 @@ export async function POST(request: NextRequest) {
       ? `${prompt}\n\nAdditional Context from Portable Spas NZ Knowledge Base:\n${enrichedContext}`
       : prompt;
 
-    // Get brand logo for brand style
-    const brandLogo = style === 'portable-spas-brand' ? getBrandLogo() : null;
+    // Get brand logo for all infographics
+    const brandLogo = getBrandLogo();
 
     // Combine reference images with brand logo if applicable
     const allReferenceImages = [...(referenceImages || [])];
