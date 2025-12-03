@@ -220,7 +220,12 @@ Render this logo text exactly as shown in the reference image, maintaining the s
   // Add the prompt - following Gemini docs: use narrative description, describe the scene
   const enhancedPrompt = `Create a professional infographic for Portable Spas New Zealand. The design should feel clean, modern, and polished - suitable for marketing materials.
 
-Important: The only text content that should appear in the infographic is the actual content provided below. Do not include any color names, style names, or design terminology as visible text.
+Important text guidelines:
+- The only text content that should appear in the infographic is the actual content provided below
+- Do not include any color names, style names, or design terminology as visible text
+- NEVER include actual URLs or web addresses in the infographic (e.g., no "www.example.com" or "https://...")
+- Instead of URLs, use friendly phrases like "Visit our website", "Check our online help centre", "Contact us online", or "Ask our AI assistant"
+- If the source content contains URLs, replace them with these friendly call-to-action phrases
 
 ${logoInstructions}${graphicInstructions ? `Visual Style:\n${graphicInstructions}\n\n` : ''}${styleInstructions ? `Color Palette:\n${styleInstructions}\n\n` : ''}Content to visualize in the infographic:
 ${prompt}
