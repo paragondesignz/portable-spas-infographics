@@ -25,7 +25,7 @@ export default function Lightbox({ imageUrl, onClose, onDownload, filename = 'in
 
   const handleZoomOut = useCallback(() => {
     setScale((s) => {
-      const newScale = Math.max(s - 0.25, 1);
+      const newScale = Math.max(s - 0.25, 0.25);
       if (newScale <= 1) {
         setPosition({ x: 0, y: 0 });
       }
@@ -121,7 +121,7 @@ export default function Lightbox({ imageUrl, onClose, onDownload, filename = 'in
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
     setScale((s) => {
-      const newScale = Math.min(Math.max(s + delta, 1), 5);
+      const newScale = Math.min(Math.max(s + delta, 0.25), 5);
       if (newScale <= 1) {
         setPosition({ x: 0, y: 0 });
       } else {
