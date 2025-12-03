@@ -98,6 +98,9 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
+        <h1 className="font-heading text-3xl font-bold text-[#4B5E5A] mb-6">
+          Infographic Generator
+        </h1>
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Left Column - Form */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
