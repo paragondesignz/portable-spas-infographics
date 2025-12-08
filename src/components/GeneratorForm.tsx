@@ -12,6 +12,40 @@ import StyleSelector from './StyleSelector';
 import GraphicStyleSelector from './GraphicStyleSelector';
 import type { AspectRatio, Resolution, InfographicStyle, GraphicStyle, GenerationResponse, PineconeContextResponse } from '@/types';
 
+// Compress image to reduce payload size
+async function compressImage(imageUrl: string, maxWidth = 1024, quality = 0.8): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+
+      // Scale down if larger than maxWidth
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width;
+        width = maxWidth;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Failed to get canvas context'));
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+      const base64 = canvas.toDataURL('image/jpeg', quality);
+      resolve(base64);
+    };
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = imageUrl;
+  });
+}
+
 interface GeneratorFormProps {
   onGenerate: (imageUrl: string, id: string) => void;
   onGenerating: (isGenerating: boolean) => void;
@@ -66,20 +100,14 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
       // First, fetch RAG context if enabled
       const context = await fetchContext();
 
-      // Convert selected image URLs to base64
+      // Convert and compress selected images to reduce payload size
       const referenceImages: string[] = [];
       for (const url of selectedImages) {
         try {
-          const response = await fetch(url);
-          const blob = await response.blob();
-          const base64 = await new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-          });
-          referenceImages.push(base64);
+          const compressedBase64 = await compressImage(url, 1024, 0.7);
+          referenceImages.push(compressedBase64);
         } catch (err) {
-          console.error('Failed to convert image to base64:', err);
+          console.error('Failed to compress image:', err);
         }
       }
 
