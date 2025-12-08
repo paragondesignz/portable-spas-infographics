@@ -98,6 +98,18 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
         }),
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API response not OK:', response.status, errorText);
+        try {
+          const errorData = JSON.parse(errorText);
+          setError(errorData.error || `Server error: ${response.status}`);
+        } catch {
+          setError(`Server error: ${response.status}`);
+        }
+        return;
+      }
+
       const data: GenerationResponse = await response.json();
 
       if (data.success && data.imageUrl && data.id) {
@@ -108,8 +120,9 @@ export default function GeneratorForm({ onGenerate, onGenerating }: GeneratorFor
         setError(data.error || 'Generation failed');
       }
     } catch (err) {
-      setError('An error occurred during generation');
-      console.error(err);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(`An error occurred during generation: ${errorMessage}`);
+      console.error('Generation error:', err);
     } finally {
       setLoading(false);
       onGenerating(false);

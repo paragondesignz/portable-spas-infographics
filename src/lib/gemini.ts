@@ -269,17 +269,23 @@ ${styleInstructions ? `Use this color approach: ${styleInstructions}` : ''}`;
 
   contentParts.push(fullPrompt);
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-pro-image-preview',
-    contents: contentParts,
-    config: {
-      responseModalities: ['TEXT', 'IMAGE'],
-      imageConfig: {
-        aspectRatio: aspectRatio,
-        imageSize: resolution,
+  let response;
+  try {
+    response = await ai.models.generateContent({
+      model: 'gemini-3-pro-image-preview',
+      contents: contentParts,
+      config: {
+        responseModalities: ['TEXT', 'IMAGE'],
+        imageConfig: {
+          aspectRatio: aspectRatio,
+          imageSize: resolution,
+        },
       },
-    },
-  });
+    });
+  } catch (apiError) {
+    console.error('Gemini API call failed:', apiError);
+    throw new Error(`Gemini API error: ${apiError instanceof Error ? apiError.message : 'Unknown API error'}`);
+  }
 
   let imageData = '';
   let mimeType = 'image/png';
@@ -287,10 +293,13 @@ ${styleInstructions ? `Use this color approach: ${styleInstructions}` : ''}`;
 
   // Process response parts
   const candidates = response.candidates;
+  console.log('Gemini response candidates:', JSON.stringify(candidates, null, 2));
+
   if (candidates && candidates[0]?.content?.parts) {
     for (const part of candidates[0].content.parts) {
       if ('text' in part && part.text) {
         textResponse = part.text;
+        console.log('Gemini text response:', textResponse);
       } else if ('inlineData' in part && part.inlineData) {
         imageData = part.inlineData.data || '';
         mimeType = part.inlineData.mimeType || 'image/png';
@@ -299,7 +308,8 @@ ${styleInstructions ? `Use this color approach: ${styleInstructions}` : ''}`;
   }
 
   if (!imageData) {
-    throw new Error('No image was generated');
+    console.error('No image in response. Full response:', JSON.stringify(response, null, 2));
+    throw new Error(textResponse || 'No image was generated');
   }
 
   return { imageData, mimeType, textResponse };
