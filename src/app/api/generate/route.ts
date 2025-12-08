@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import sharp from 'sharp';
 import { generateInfographic } from '@/lib/gemini';
 import { saveInfographic } from '@/lib/storage';
 import { isAuthenticated } from '@/lib/auth';
@@ -9,20 +8,13 @@ import type { GenerationRequest, GenerationResponse, AspectRatio, Resolution, In
 
 export const maxDuration = 60; // Allow up to 60 seconds for generation
 
-// Load and compress brand logo for infographic generation
-async function getBrandLogo(): Promise<string | null> {
+// Load brand logo for infographic generation (no compression to preserve text clarity)
+function getBrandLogo(): string | null {
   try {
     const logoPath = join(process.cwd(), 'public', 'portable-spas-logo.png');
     const logoBuffer = readFileSync(logoPath);
-
-    // Compress logo to max 512px width
-    const compressedBuffer = await sharp(logoBuffer)
-      .resize(512, null, { withoutEnlargement: true })
-      .jpeg({ quality: 80 })
-      .toBuffer();
-
-    const base64 = compressedBuffer.toString('base64');
-    return `data:image/jpeg;base64,${base64}`;
+    const base64 = logoBuffer.toString('base64');
+    return `data:image/png;base64,${base64}`;
   } catch (error) {
     console.error('Failed to load brand logo:', error);
     return null;
@@ -56,7 +48,7 @@ export async function POST(request: NextRequest) {
       : prompt;
 
     // Get brand logo for all infographics
-    const brandLogo = await getBrandLogo();
+    const brandLogo = getBrandLogo();
 
     // Combine reference images with brand logo if applicable
     const allReferenceImages = [...(referenceImages || [])];
