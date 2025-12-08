@@ -12,7 +12,7 @@ export const maxDuration = 60; // Allow up to 60 seconds for generation
 // Load and compress brand logo for infographic generation
 async function getBrandLogo(): Promise<string | null> {
   try {
-    const logoPath = join(process.cwd(), 'public', 'logo.png');
+    const logoPath = join(process.cwd(), 'public', 'portable-spas-logo.png');
     const logoBuffer = readFileSync(logoPath);
 
     // Compress logo to max 512px width

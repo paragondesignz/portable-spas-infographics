@@ -244,7 +244,7 @@ export async function generateInfographic(
 
   // Build logo instruction
   const logoInstruction = logoImage
-    ? `The ${hasStyleRefs ? 'last' : 'provided'} image shows the Portable Spas New Zealand logo. Reproduce this logo exactly in the bottom-right corner of the infographic, sized at roughly 12% of image width. The logo has "PORTABLE SPAS" in bold sans-serif on top and "New Zealand" in elegant script below. Maintain clear space around the logo equal to the height of the letter O.`
+    ? `The ${hasStyleRefs ? 'last' : 'provided'} image shows the Portable Spas New Zealand logo. Reproduce this logo in the bottom-right corner of the infographic, sized at roughly 12% of image width. The logo has "PORTABLE SPAS" in bold sans-serif on top and "New Zealand" in elegant script below. You may adapt the logo color to complement the infographic's design - use any of the brand colors (#4B5E5A dark teal-grey, #C4D0CD soft blue-grey, #E3DEC8 warm cream, #907E59 warm brown, #FFFFFF white, or #000000 black) to ensure good contrast and visual harmony. Maintain clear space around the logo equal to the height of the letter O.`
     : '';
 
   const fullPrompt = `Create a professional marketing infographic for Portable Spas New Zealand.
